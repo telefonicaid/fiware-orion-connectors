@@ -31,6 +31,7 @@ import com.telefonica.iot.cygnus.errors.CygnusBadConfiguration;
 import com.telefonica.iot.cygnus.errors.CygnusCappingError;
 import com.telefonica.iot.cygnus.errors.CygnusExpiratingError;
 import com.telefonica.iot.cygnus.errors.CygnusPersistenceError;
+import com.telefonica.iot.cygnus.errors.CygnusRuntimeError;
 import com.telefonica.iot.cygnus.interceptors.NGSIEvent;
 import static com.telefonica.iot.cygnus.sinks.NGSIMongoBaseSink.LOGGER;
 import com.telefonica.iot.cygnus.utils.CommonUtils;
@@ -150,7 +151,12 @@ public class NGSIMongoSink extends NGSIMongoBaseSink {
             batch.setNextPersisted(true);
         } // for
     } // persistBatch
-    
+
+    @Override
+    void persistError(String destination, Exception exception) throws CygnusPersistenceError,
+                                                                      CygnusRuntimeError {
+    }
+
     @Override
     public void capRecords(NGSIBatch batch, long maxRecords) throws CygnusCappingError {
     } // capRecords

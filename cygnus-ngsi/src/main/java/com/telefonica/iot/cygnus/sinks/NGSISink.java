@@ -606,9 +606,11 @@ public abstract class NGSISink extends CygnusSink implements Configurable {
                         LOGGER.info("Finishing internal transaction (" + transactionIds + ")" + " Destination: " + destination );
                     } catch (CygnusBadConfiguration | CygnusBadContextData | CygnusRuntimeError e) {
                         updateServiceMetrics(batchToPersist, true);
+                        persistError(destination, e);
                         LOGGER.error(e.getMessage() + " Destination: " + destination + " Stack trace: " + Arrays.toString(e.getStackTrace()));
                     } catch (Exception e) {
                         updateServiceMetrics(batchToPersist, true);
+                        persistError(destination, e);
                         LOGGER.error(e.getMessage() + " Destination: " + destination + " Stack trace: " + Arrays.toString(e.getStackTrace()));
                         for (NGSIEvent event : batchToPersist.getNextEvents()) {
                             rollbackBatch.addEvent(destination, event);
@@ -1074,7 +1076,16 @@ public abstract class NGSISink extends CygnusSink implements Configurable {
      */
     abstract void persistBatch(NGSIBatch batch) throws CygnusBadConfiguration, CygnusBadContextData,
             CygnusRuntimeError, CygnusPersistenceError;
-    
+
+    /**
+     * This is the method the classes extending this class must implement to persist all kind of sink configuration errors
+     * @param destination
+     * @param exception
+     * @throws CygnusPersistenceError, CygnusRuntimeError
+     */
+    abstract void persistError(String destination, Exception exception) throws CygnusPersistenceError,
+                                                                               CygnusRuntimeError;
+
     /**
      * This is the method the classes extending this class must implement when dealing with size-based capping.
      * @param batch

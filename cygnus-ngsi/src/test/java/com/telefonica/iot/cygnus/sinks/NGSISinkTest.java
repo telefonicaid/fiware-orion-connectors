@@ -21,6 +21,7 @@ import com.telefonica.iot.cygnus.containers.NotifyContextRequest.ContextElement;
 import com.telefonica.iot.cygnus.errors.CygnusCappingError;
 import com.telefonica.iot.cygnus.errors.CygnusExpiratingError;
 import com.telefonica.iot.cygnus.errors.CygnusPersistenceError;
+import com.telefonica.iot.cygnus.errors.CygnusRuntimeError;
 import com.telefonica.iot.cygnus.interceptors.NGSIEvent;
 import com.telefonica.iot.cygnus.sinks.Enums.DataModel;
 import com.telefonica.iot.cygnus.sinks.NGSISink.Accumulator;
@@ -93,6 +94,11 @@ public class NGSISinkTest {
         void persistBatch(NGSIBatch batch) throws CygnusPersistenceError {
             throw new UnsupportedOperationException("Not supported yet.");
         } // persistBatch
+
+        @Override
+        void persistError(String destination, Exception exception)
+            throws CygnusPersistenceError, CygnusRuntimeError {
+        }
 
         @Override
         public void capRecords(NGSIBatch batch, long size) throws CygnusCappingError {
